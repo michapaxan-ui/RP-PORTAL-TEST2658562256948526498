@@ -3,79 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RP Портал - REDWOOD RP</title>
+    <title>REDWOOD RP PORTAL</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --primary-green: #4ade80;
-            --dark-green: #166534;
+            --main-bg: #111e19;
+            --glass-card: rgba(26, 47, 39, 0.6);
+            --glass-border: rgba(74, 222, 128, 0.15);
+            --primary-green: #3cd070;
+            --neon-glow: 0 0 15px rgba(60, 208, 112, 0.4);
             --text-main: #ffffff;
-            --text-muted: #9ca3af;
+            --text-muted: #8fa399;
+            --accent-orange: #f59e0b;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-color);
+            background: linear-gradient(135deg, #0b1511 0%, #162a22 100%);
             color: var(--text-main);
+            min-height: 100vh;
+            padding: 16px 16px 90px 16px;
             overflow-x: hidden;
-            padding: 15px;
         }
 
+        /* Экраны */
         .screen {
             display: none;
-            animation: fadeIn 0.3s ease-in-out;
+            animation: screenFade 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .screen.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes screenFade {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .neon-title {
-            color: var(--primary-green);
-            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
-            font-size: 24px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 12px;
+        /* Верхушка (Хедер) */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
 
+        .server-logo-area h1 {
+            color: var(--primary-green);
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .server-logo-area p {
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        /* Карточки и Плашки */
+        .glass-panel {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        /* Кнопка Серверы сверху главного меню */
+        .servers-launcher-btn {
+            background: linear-gradient(90deg, rgba(34,197,94,0.15) 0%, rgba(21,128,61,0.05) 100%);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .servers-launcher-btn:active {
+            transform: scale(0.98);
+            border-color: var(--primary-green);
+        }
+
+        /* Пульс города (Статистика) */
+        .section-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: #d1d5db;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            box-shadow: var(--neon-glow);
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            background: rgba(25, 42, 35, 0.4);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-box .num {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .stat-box .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Блок текущего Мэра */
+        .mayor-banner {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(26, 47, 39, 0.6) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            position: relative;
+        }
+
+        /* Плитки меню (Грид) */
+        .menu-tiles-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .tile {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tile:active {
+            transform: translateY(2px);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .tile-icon {
+            font-size: 20px;
+            background: rgba(255,255,255,0.05);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tile-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 14px;
+        }
+
+        .tile-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Нижний Навбар (Навигация) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(13, 23, 19, 0.92);
+            border-top: 1px solid rgba(74, 222, 128, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+            z-index: 99;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
+            width: 16%;
+        }
+
+        .nav-item.active {
+            color: var(--primary-green);
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        /* Поля ввода формы */
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 14px;
         }
 
         .input-group label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             text-transform: uppercase;
         }
 
         .input-field {
             width: 100%;
-            background: #262626;
-            border: 1px solid #3f3f46;
-            padding: 12px;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            padding: 12px 14px;
+            border-radius: 10px;
             color: white;
             font-size: 14px;
             outline: none;
@@ -83,91 +272,67 @@
 
         .input-field:focus {
             border-color: var(--primary-green);
+            box-shadow: var(--neon-glow);
         }
 
+        /* Кнопки */
         .btn {
             width: 100%;
             padding: 14px;
             border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
             border: none;
-            font-size: 16px;
-            font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 10px;
         }
 
-        .btn-primary {
+        .btn-green {
             background: var(--primary-green);
-            color: #000;
-            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+            color: #0d1713;
         }
 
-        .btn-primary:active {
+        .btn-green:active {
             transform: scale(0.98);
-            background: #22c55e;
+            opacity: 0.9;
         }
 
-        .btn-secondary {
-            background: #262626;
-            color: var(--primary-green);
-            border: 1px solid rgba(74, 222, 128, 0.2);
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: white;
         }
 
-        .btn-dark {
-            background: #1c1c1e;
-            color: var(--text-main);
-            border: 1px solid #2c2c2e;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border-left: 4px solid var(--primary-green);
-        }
-
-        .stat-val {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--primary-green);
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
+        /* Вылетающие снизу листы (Модалки) */
         .bottom-sheet {
             position: fixed;
             bottom: -100%;
             left: 0;
             width: 100%;
-            background: #161618;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            padding: 20px;
-            transition: bottom 0.3s ease-in-out;
+            background: #0f1c16;
+            border-top: 1px solid rgba(74, 222, 128, 0.2);
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+            transition: bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 100;
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
         }
 
         .bottom-sheet.open {
             bottom: 0;
+        }
+
+        .sheet-bar {
+            width: 36px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin: -12px auto 16px auto;
         }
 
         .sheet-header {
@@ -178,333 +343,378 @@
         }
 
         .close-btn {
-            background: #2c2c2e;
-            color: white;
+            background: rgba(255,255,255,0.06);
             border: none;
-            width: 30px;
-            height: 30px;
+            color: white;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .server-item {
-            background: #222224;
-            padding: 15px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            font-size: 14px;
             cursor: pointer;
         }
 
-        .server-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .server-num {
-            background: #2e2e30;
-            color: var(--primary-green);
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .online-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: var(--primary-green);
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-
-        .code-box {
-            background: #2c2c2e;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            font-family: monospace;
-            font-size: 18px;
-            color: var(--primary-green);
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            cursor: pointer;
-        }
-
+        /* Список элементов */
         .item-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: 300px;
-            overflow-y: auto;
             margin-bottom: 15px;
         }
 
         .list-item {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            border: 1px solid #2c2c2e;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 14px;
+            border-radius: 12px;
+        }
+
+        .empty-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 30px 10px;
+            font-size: 13px;
         }
 
         .checkbox-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
-            max-height: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 180px;
             overflow-y: auto;
-            background: #1c1c1e;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 14px;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 5px 0;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
 
     <div id="screen-reg" class="screen active">
-        <h1 class="neon-title" style="margin-top: 40px; text-align: center;">Регистрация</h1>
-        <p class="subtitle" style="text-align: center;">Добро пожаловать в RP Портал</p>
+        <div style="text-align: center; margin-top: 40px; margin-bottom: 30px;">
+            <h1 style="color: var(--primary-green); font-size: 28px; font-weight: 800;">РЕГИСТРАЦИЯ</h1>
+            <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Создайте единый профиль игрока</p>
+        </div>
         
-        <div class="input-group">
-            <label>Ник в Roblox</label>
-            <input type="text" id="reg-roblox" class="input-field" placeholder="Введите ваш ник">
-        </div>
-        <div class="input-group">
-            <label>Создать пароль</label>
-            <input type="password" id="reg-pass" class="input-field" placeholder="••••••••">
-        </div>
-        <div class="input-group">
-            <label>Подтвердите пароль</label>
-            <input type="password" id="reg-pass-confirm" class="input-field" placeholder="••••••••">
+        <div class="glass-panel">
+            <div class="input-group">
+                <label>Ваш ник в Roblox</label>
+                <input type="text" id="reg-roblox" class="input-field" placeholder="Введите точный ник">
+            </div>
+            <div class="input-group">
+                <label>Создать пароль</label>
+                <input type="password" id="reg-pass" class="input-field" placeholder="••••••••">
+            </div>
+            <div class="input-group">
+                <label>Подтверждение пароля</label>
+                <input type="password" id="reg-pass-confirm" class="input-field" placeholder="••••••••">
+            </div>
         </div>
 
-        <button class="btn btn-primary" style="margin-top: 20px;" onclick="registerProfile()">Создать профиль</button>
+        <button class="btn btn-green" style="box-shadow: var(--neon-glow);" onclick="registerProfile()">Создать профиль</button>
     </div>
 
     <div id="screen-main" class="screen">
-        <div style="margin-bottom: 20px;">
-            <h1 class="neon-title">REDWOOD RP</h1>
-            <p class="subtitle">РП Портал</p>
-        </div>
-
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-val" id="live-online">34</div>
-                <div style="font-size: 11px; color: var(--text-muted);">Игроков в сети</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-val" id="live-factions">12</div>
-                <div style="font-size: 11px; color: var(--text-muted);">Во фракциях</div>
+        <div class="app-header">
+            <div class="server-logo-area">
+                <h1>REDWOOD RP</h1>
+                <p>РП Портал</p>
             </div>
         </div>
 
-        <button class="btn btn-primary" onclick="openServers()">СЕРВЕРЫ</button>
-
-        <div class="menu-grid">
-            <button class="btn btn-secondary" onclick="openNews()">Новости</button>
-            <button class="btn btn-secondary" onclick="openMayor()">Мэр</button>
-            <button class="btn btn-secondary" onclick="openIdeas()">Идеи</button>
-            <button class="btn btn-secondary" onclick="openRules()">Правила</button>
+        <div class="glass-panel servers-launcher-btn" onclick="openServersSheet()">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 20px;">📁</span>
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; color: var(--primary-green);">СЕРВЕРЫ</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Выбрать сервер и подключиться</div>
+                </div>
+            </div>
+            <span style="color: var(--text-muted); font-size: 14px;">❯</span>
         </div>
-        
-        <button class="btn btn-dark" onclick="openFactions()">Фракции</button>
-        <button class="btn btn-dark" onclick="openLicenses()">Лицензии</button>
 
-        <button id="admin-panel-btn" class="btn btn-primary" style="background:#e11d48; color:white; display:none; margin-top:15px;" onclick="openAdmin()">Панель Владельца</button>
-    </div>
-
-    <div id="screen-news" class="screen">
-        <h2 class="neon-title">Новости</h2>
-        <p class="subtitle">Официальные публикации</p>
-        <div id="news-container" class="item-list"></div>
-        <button class="btn btn-dark" onclick="goBack('main')">Назад</button>
-    </div>
-
-    <div id="screen-mayor" class="screen">
-        <h2 class="neon-title">Выборы Мэра</h2>
-        <p class="subtitle">Голосуйте или подайте заявку</p>
-        <button class="btn btn-primary" onclick="applyForMayor()">Подать заявку на Мэра</button>
-        <h3 style="margin: 15px 0 10px 0; font-size:14px; color:var(--text-muted);">КАНДИДАТЫ:</h3>
-        <div id="mayor-candidates" class="item-list"></div>
-        <button class="btn btn-dark" onclick="goBack('main')">Назад</button>
-    </div>
-
-    <div id="screen-ideas" class="screen">
-        <h2 class="neon-title">Идеи игроков</h2>
-        <p class="subtitle">Предложите улучшения для сервера</p>
-        <div class="input-group">
-            <input type="text" id="idea-input" class="input-field" placeholder="Ваша идея...">
+        <div class="glass-panel">
+            <div class="section-tag"><span class="pulse-dot"></span>Пульс города</div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="num" id="live-online">0</div>
+                    <div class="label">Игроков</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="live-factions">0</div>
+                    <div class="label">В фракциях</div>
+                </div>
+            </div>
         </div>
-        <button class="btn btn-primary" onclick="submitIdea()">Отправить идею</button>
-        <div id="ideas-container" class="item-list" style="margin-top:15px;"></div>
-        <button class="btn btn-dark" onclick="goBack('main')">Назад</button>
-    </div>
 
-    <div id="screen-rules" class="screen">
-        <h2 class="neon-title">Правила</h2>
-        <p class="subtitle">Свод законов REDWOOD RP</p>
-        <div class="list-item" style="line-height: 1.6;">
-            Раздел в разработке. Правила будут изменены владельцем в ближайшее время.
+        <div class="glass-panel mayor-banner">
+            <div class="section-tag" style="color: var(--accent-orange);">👑 Текущий мэр города</div>
+            <div id="current-mayor-info" class="empty-placeholder" style="padding: 10px 0; font-size:12px;">
+                Место свободно. Проводятся выборы!
+            </div>
         </div>
-        <button class="btn btn-dark" onclick="goBack('main')">Назад</button>
+
+        <div class="section-tag" style="margin-top: 10px; margin-left: 4px;">🏠 Город</div>
+        <div class="menu-tiles-grid">
+            <div class="tile" onclick="openNews()">
+                <div class="tile-icon">📰</div>
+                <div>
+                    <div class="tile-title">Новости</div>
+                    <div class="tile-desc">Последние события</div>
+                </div>
+            </div>
+            <div class="tile" onclick="openMayor()">
+                <div class="tile-icon">💼</div>
+                <div>
+                    <div class="tile-title">Выборы мэра</div>
+                    <div class="tile-desc">Голосование</div>
+                </div>
+            </div>
+            <div class="tile" onclick="openIdeas()">
+                <div class="tile-icon">📣</div>
+                <div>
+                    <div class="tile-title">Идеи</div>
+                    <div class="tile-desc">Жалобы и предложения</div>
+                </div>
+            </div>
+            <div class="tile" onclick="openRules()">
+                <div class="tile-icon">📜</div>
+                <div>
+                    <div class="tile-title">Правила</div>
+                    <div class="tile-desc">Официальные бумаги</div>
+                </div>
+            </div>
+        </div>
+
+        <button id="admin-panel-btn" class="btn btn-outline" style="margin-top: 15px; border-color: #ef4444; color: #ef4444; display:none;" onclick="openAdmin()">⚙️ Панель Владельца</button>
     </div>
 
     <div id="screen-factions" class="screen">
-        <h2 class="neon-title">Фракции</h2>
-        <p class="subtitle">Выберите ведомство для просмотра</p>
+        <h2 class="neon-title" style="color:var(--primary-green); margin-bottom: 4px;">ФРАКЦИИ</h2>
+        <p class="subtitle" style="color:var(--text-muted); font-size:12px; margin-bottom: 15px;">Подайте заявку или просмотрите состав</p>
+        
         <div class="item-list">
-            <div class="list-item" onclick="selectFaction('ФБР')">ФБР</div>
-            <div class="list-item" onclick="selectFaction('МВД')">МВД</div>
-            <div class="list-item" onclick="selectFaction('ДПС')">ДПС</div>
-            <div class="list-item" onclick="selectFaction('ПОЛИЦИЯ')">ПОЛИЦИЯ</div>
-            <div class="list-item" onclick="selectFaction('АДВОКАТУРА')">АДВОКАТУРА</div>
-            <div class="list-item" onclick="selectFaction('ПРОКУРАТУРА')">ПРОКУРАТУРА</div>
-            <div class="list-item" onclick="selectFaction('СУДЬЯ')">СУДЬЯ</div>
+            <div class="glass-panel list-item" onclick="selectFaction('ФБР')">💼 ФБР</div>
+            <div class="glass-panel list-item" onclick="selectFaction('МВД')">🛡️ МВД</div>
+            <div class="glass-panel list-item" onclick="selectFaction('ДПС')">🚔 ДПС</div>
+            <div class="glass-panel list-item" onclick="selectFaction('ПОЛИЦИЯ')">👮 ПОЛИЦИЯ</div>
+            <div class="glass-panel list-item" onclick="selectFaction('АДВОКАТУРА')">⚖️ АДВОКАТУРА</div>
+            <div class="glass-panel list-item" onclick="selectFaction('ПРОКУРАТУРА')">📂 ПРОКУРАТУРА</div>
+            <div class="glass-panel list-item" onclick="selectFaction('СУДЬЯ')">🔨 СУДЬЯ</div>
         </div>
-        <button class="btn btn-dark" onclick="goBack('main')">Назад</button>
     </div>
 
     <div id="screen-faction-view" class="screen">
-        <h2 id="fac-title" class="neon-title">Название фракции</h2>
-        <p id="fac-desc" style="color:var(--text-muted); margin-bottom:15px; font-size:14px;"></p>
-        <button class="btn btn-primary" onclick="openFactionApply()">Подать заявку</button>
-        <h3 style="margin:15px 0 5px 0; font-size:14px;">Участники:</h3>
+        <h2 id="fac-title" style="color:var(--primary-green);">Фракция</h2>
+        <p id="fac-desc" style="color:var(--text-muted); font-size:13px; margin: 8px 0 15px 0;"></p>
+        
+        <button class="btn btn-green" onclick="openFactionApply()" style="margin-bottom:20px;">Подать заявку во фракцию</button>
+        
+        <div class="section-tag">👥 Состав организации</div>
         <div id="fac-members" class="item-list"></div>
-        <button class="btn btn-dark" onclick="goBack('factions')">Назад</button>
     </div>
 
     <div id="screen-faction-apply" class="screen">
-        <h2 class="neon-title">Заявка</h2>
-        <div class="input-group" style="margin-top:15px;">
-            <label>Ник в Roblox</label>
-            <input type="text" id="fac-app-roblox" class="input-field" readonly>
+        <h2>Подача заявления</h2>
+        <p class="subtitle" style="color:var(--text-muted); font-size:12px; margin-bottom:15px;">Заполните анкету честно</p>
+        
+        <div class="glass-panel">
+            <div class="input-group">
+                <label>Ник в Roblox</label>
+                <input type="text" id="fac-app-roblox" class="input-field" readonly>
+            </div>
+            <div class="input-group">
+                <label>Почему именно к нам?</label>
+                <textarea id="fac-app-reason" class="input-field" rows="4" placeholder="Опишите свои цели и опыт..."></textarea>
+            </div>
         </div>
-        <div class="input-group">
-            <label>Почему именно к нам?</label>
-            <textarea id="fac-app-reason" class="input-field" rows="4" placeholder="Опишите ваши мотивы"></textarea>
-        </div>
-        <button class="btn btn-primary" onclick="submitFactionApply()">Отправить заявку</button>
-        <button class="btn btn-dark" onclick="goBack('faction-view')">Отмена</button>
+        <button class="btn btn-green" onclick="submitFactionApply()">Отправить заявку</button>
+        <button class="btn btn-outline" style="margin-top:8px;" onclick="goBack('faction-view')">Отмена</button>
     </div>
 
     <div id="screen-licenses" class="screen">
-        <h2 class="neon-title">Реестр Лицензий</h2>
-        <div class="menu-grid" style="margin-top:15px;">
-            <button class="btn btn-secondary" onclick="showLicenseTab('registry')">Реестр</button>
-            <button class="btn btn-secondary" onclick="showLicenseTab('buy')">Оформление</button>
+        <h2 style="color:var(--primary-green);">ЛИЦЕНЗИИ</h2>
+        <p class="subtitle" style="color:var(--text-muted); font-size:12px; margin-bottom:15px;">Реестр и покупка лицензий</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <button class="btn btn-outline" id="btn-tab-lic-reg" onclick="showLicenseTab('registry')">Реестр</button>
+            <button class="btn btn-outline" id="btn-tab-lic-buy" onclick="showLicenseTab('buy')">Оформление</button>
         </div>
 
         <div id="lic-tab-registry">
-            <input type="text" id="lic-search" class="input-field" placeholder="Поиск по нику..." oninput="searchLicenses()" style="margin-bottom:15px;">
+            <input type="text" id="lic-search" class="input-field" placeholder="🔍 Поиск по нику игрока..." oninput="searchLicenses()" style="margin-bottom:15px;">
             <div id="lic-list" class="item-list"></div>
         </div>
 
         <div id="lic-tab-buy" style="display:none;">
-            <div class="list-item" style="margin-bottom:10px;" onclick="selectPayment('cash')">
-                <strong>За деньги</strong>
-                <div style="color:var(--primary-green);">8000$</div>
+            <div class="glass-panel" style="border-color: rgba(74,222,128,0.4);" onclick="selectPayment('cash')">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong>Оплата наличными</strong>
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Купить через игровую валюту</div>
+                    </div>
+                    <span style="color:var(--primary-green); font-weight:700;">8,000$</span>
+                </div>
             </div>
-            <div class="list-item" style="opacity:0.5;">
-                <strong>Скоро...</strong>
+            <div class="glass-panel" style="opacity:0.4;">
+                <div style="display:flex; justify-content:between; align-items:center;">
+                    <div><strong>Другие способы оплаты</strong><div style="font-size:11px;">В разработке</div></div>
+                </div>
             </div>
 
             <div id="lic-form" style="display:none; margin-top:15px;">
-                <div style="background:rgba(239,68,68,0.1); border:1px solid #ef4444; padding:10px; border-radius:8px; margin-bottom:15px; font-size:13px;">
-                    ⚠️ Внимание: Оплата 8000$ на ник <strong>Micha</strong>.
+                <div style="background:rgba(245,158,11,0.1); border:1px solid var(--accent-orange); padding:12px; border-radius:10px; margin-bottom:15px; font-size:12px; color:#fcd34d;">
+                    ⚠️ Важно: Переведите 8,000$ в игре на ник <b>Micha</b>, затем заполните форму ниже.
                 </div>
-                <div class="input-group">
-                    <label>Ник в Roblox</label>
-                    <input type="text" id="lic-roblox" class="input-field">
+                <div class="glass-panel">
+                    <div class="input-group">
+                        <label>Ник в Roblox</label>
+                        <input type="text" id="lic-roblox" class="input-field">
+                    </div>
+                    <div class="input-group">
+                        <label>Ваш Телеграм Ник (@username)</label>
+                        <input type="text" id="lic-tg" class="input-field">
+                    </div>
+                    
+                    <label style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:6px;">ВЫБЕРИТЕ ТИПЫ (МАКСИМУМ 5):</label>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Glock 17"> Glock 17</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="MP5"> MP5</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="MP8B Shotgun"> MP8B SHOTGUN</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="M4 Carabine"> M4 CARABINE</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="G36"> G36</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Sniper"> SNIPER</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Bayonet"> BAYONET</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Machete"> MACHETE</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Baseball Bat"> BASEBALL BAT</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Metal Bat"> METAL BAT</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Knuckledusters"> KNUCKKLEDUSTERS</div>
+                        <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Тайзер"> Тайзер</div>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>Телеграм Юзернейм</label>
-                    <input type="text" id="lic-tg" class="input-field">
-                </div>
-                
-                <label style="font-size:12px; color:var(--text-muted);">ВЫБЕРИТЕ ТИПЫ (МАКС. 5):</label>
-                <div class="checkbox-grid">
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Glock 17"> Glock 17</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="MP5"> MP5</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="MP8B Shotgun"> MP8B SHOTGUN</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="M4 Carabine"> M4 CARABINE</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="G36"> G36</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Sniper"> SNIPER</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Bayonet"> BAYONET</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Machete"> MACHETE</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Baseball Bat"> BASEBALL BAT</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Metal Bat"> METAL BAT</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Knuckledusters"> KNUCKKLEDUSTERS</div>
-                    <div class="checkbox-item"><input type="checkbox" class="lic-cb" value="Тайзер"> Тайзер</div>
-                </div>
-                <button class="btn btn-primary" onclick="submitLicense()">Отправить заявку</button>
+                <button class="btn btn-green" onclick="submitLicense()">Отправить заявку</button>
             </div>
         </div>
-        <button class="btn btn-dark" style="margin-top:15px;" onclick="goBack('main')">Назад</button>
+    </div>
+
+    <div id="screen-news" class="screen">
+        <h2 style="color:var(--primary-green);">НОВОСТИ</h2>
+        <p class="subtitle" style="color:var(--text-muted); font-size:12px; margin-bottom:15px;">Официальные объявления сервера</p>
+        <div id="news-container" class="item-list"></div>
+        <button class="btn btn-outline" onclick="goBack('main')">↩️ Назад</button>
+    </div>
+
+    <div id="screen-mayor" class="screen">
+        <h2 style="color:var(--primary-green);">ВЫБОРЫ МЭРА</h2>
+        <p class="subtitle" style="color:var(--text-muted); font-size:12px; margin-bottom:15px;">Выдвигайте свою кандидатуру</p>
+        <button class="btn btn-green" onclick="applyForMayor()" style="margin-bottom:15px;">Подать заявку на Мэра</button>
+        
+        <div class="section-tag">🗳️ Список кандидатов</div>
+        <div id="mayor-candidates" class="item-list"></div>
+        <button class="btn btn-outline" onclick="goBack('main')">↩️ Назад</button>
+    </div>
+
+    <div id="screen-ideas" class="screen">
+        <h2 style="color:var(--primary-green);">ИДЕИ И ПРЕДЛОЖЕНИЯ</h2>
+        <p class="subtitle" style="color:var(--text-muted); font-size:12px; margin-bottom:15px;">Поделитесь мыслями по улучшению проекта</p>
+        
+        <div class="glass-panel">
+            <div class="input-group">
+                <label>Ваше предложение</label>
+                <input type="text" id="idea-input" class="input-field" placeholder="Опишите задумку...">
+            </div>
+            <button class="btn btn-green" style="padding:10px;" onclick="submitIdea()">Отправить</button>
+        </div>
+        
+        <div class="section-tag">💡 Идеи игроков</div>
+        <div id="ideas-container" class="item-list"></div>
+        <button class="btn btn-outline" onclick="goBack('main')">↩️ Назад</button>
+    </div>
+
+    <div id="screen-rules" class="screen">
+        <h2 style="color:var(--primary-green);">ПРАВИЛА ПРОЕКТА</h2>
+        <p class="subtitle" style="color:var(--text-muted); font-size:12px; margin-bottom:15px;">Обязательны к исполнению</p>
+        <div class="glass-panel" style="font-size:14px; line-height:1.6; color:#e2e8f0;">
+            Раздел находится в обработке. Правила будут изменены владельцем в ближайшее время!
+        </div>
+        <button class="btn btn-outline" onclick="goBack('main')">↩️ Назад</button>
     </div>
 
     <div id="screen-admin" class="screen">
-        <h2 class="neon-title">Управление</h2>
-        <div class="input-group" style="margin-top:15px;">
-            <label>Опубликовать новость</label>
-            <input type="text" id="admin-news-input" class="input-field" placeholder="Текст новости">
-            <button class="btn btn-primary" style="margin-top:5px; padding:8px;" onclick="adminPostNews()">Опубликовать</button>
+        <h2 style="color:#ef4444;">ПАНЕЛЬ ВЛАДЕЛЬЦА</h2>
+        <div class="glass-panel" style="margin-top:15px;">
+            <div class="input-group">
+                <label>Опубликовать новость</label>
+                <input type="text" id="admin-news-input" class="input-field" placeholder="Текст новости...">
+            </div>
+            <button class="btn btn-green" style="padding:8px;" onclick="adminPostNews()">Выпустить новость</button>
         </div>
-        <hr style="border-color:#2c2c2e; margin:15px 0;">
-        <h3 style="font-size:14px; margin-bottom:10px;">Заявки во фракции:</h3>
+        
+        <div class="section-tag" style="color:#ef4444; margin-top:15px;">📥 Заявки во фракции</div>
         <div id="admin-faction-apps" class="item-list"></div>
-        <button class="btn btn-dark" onclick="goBack('main')">Назад</button>
+        <button class="btn btn-outline" onclick="goBack('main')">↩️ Назад</button>
     </div>
 
+    <nav class="bottom-nav" id="app-nav" style="display:none;">
+        <button class="nav-item active" onclick="switchTab('main')">
+            <span class="nav-icon">🏠</span><span>Главная</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('factions')">
+            <span class="nav-icon">🛡️</span><span>Фракции</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('licenses')">
+            <span class="nav-icon">💳</span><span>Лицензии</span>
+        </button>
+    </nav>
+
     <div id="sheet-servers" class="bottom-sheet">
+        <div class="sheet-bar"></div>
         <div class="sheet-header">
-            <span class="neon-title" style="font-size:18px;">Серверы</span>
-            <button class="close-btn" onclick="closeServers()">✕</button>
+            <div>
+                <h3 style="color:var(--primary-green); font-size:18px; font-weight:700;">СЕРВЕРЫ</h3>
+                <p style="color:var(--text-muted); font-size:12px;">Выберите сервер для входа</p>
+            </div>
+            <button class="close-btn" onclick="closeServersSheet()">✕</button>
         </div>
-        <p class="subtitle" style="margin-top:-15px;">Выберите сервер для входа</p>
-        <div class="server-item" onclick="openServerOne()">
-            <div class="server-info">
-                <div class="server-num">1</div>
+        <div class="glass-panel" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openServerOneDetail()">
+            <div style="display:flex; align-items:center; gap:14px;">
+                <div style="background:#1d352a; color:var(--primary-green); width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700;">1</div>
                 <div>
-                    <strong>Сервер 1</strong>
-                    <div style="font-size:12px; color:var(--text-muted);"><span class="online-dot"></span>Онлайн</div>
+                    <div style="font-size:14px; font-weight:600;">Сервер 1</div>
+                    <div style="font-size:11px; color:var(--primary-green); display:flex; align-items:center; gap:4px;"><span class="pulse-dot" style="animation:none;"></span>Онлайн</div>
                 </div>
             </div>
-            <div style="color:var(--text-muted);">❯</div>
+            <span style="color:var(--text-muted);">❯</span>
         </div>
     </div>
 
     <div id="sheet-server-detail" class="bottom-sheet">
+        <div class="sheet-bar"></div>
         <div class="sheet-header">
             <div style="display:flex; align-items:center; gap:10px;">
-                <div class="server-num" style="width:30px; height:30px; font-size:14px;">1</div>
+                <div style="background:#1d352a; color:var(--primary-green); width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px;">1</div>
                 <div>
-                    <strong style="text-transform:uppercase; color:var(--primary-green);">Сервер 1</strong>
-                    <div style="font-size:11px; color:var(--text-muted);"><span class="online-dot"></span>Онлайн</div>
+                    <h3 style="font-size:15px; font-weight:700;">СЕРВЕР 1</h3>
+                    <div style="font-size:10px; color:var(--primary-green);">● Онлайн</div>
                 </div>
             </div>
         </div>
-        <label style="font-size:11px; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:5px;">Код сервера</label>
-        <div class="code-box" onclick="copyServerCode()">TestServer</div>
-        <button class="btn btn-primary" onclick="clickPlayEffect()">ИГРАТЬ</button>
-        <button class="btn btn-secondary" onclick="copyServerCode()">КОД СЕРВЕРА</button>
-        <button class="btn btn-dark" onclick="backToServersSheet()">✕ НАЗАД</button>
+        
+        <div class="input-group">
+            <label style="font-size:10px; letter-spacing:0.5px;">Код сервера</label>
+            <div class="code-box" id="srv-code-box" onclick="copyServerCode()" style="background:rgba(0,0,0,0.4); border:1px dashed rgba(74,222,128,0.3); padding:14px; border-radius:10px; text-align:center; font-family:monospace; font-size:18px; color:var(--primary-green); font-weight:700;">TestServer</div>
+        </div>
+
+        <button class="btn btn-green" onclick="playClickEffect()" style="margin-bottom:8px; background:linear-gradient(135deg, #3cd070 0%, #16a34a 100%); color:white; box-shadow:var(--neon-glow);">🎮 ГРАТИ</button>
+        <button class="btn btn-outline" onclick="copyServerCode()" style="margin-bottom:12px; border-color:rgba(74,222,128,0.3); color:var(--primary-green);">📋 КОД СЕРВЕРУ</button>
+        <button class="btn btn-outline" style="background:rgba(255,255,255,0.02);" onclick="backToServersSheet()">✕ НАЗАД</button>
     </div>
 
     <script>
@@ -513,60 +723,84 @@
 
         let userRoblox = "";
         let currentFaction = "";
-        let tgUser = tg.initDataUnsafe?.user || { id: 1234567, username: "Player" };
+        let tgUser = tg.initDataUnsafe?.user || { id: 777777, username: "Владелец" };
 
-        // Имитируем, что ТЫ (владелец) заходишь в систему. Добавляем админку для тестов
-        const isOwner = true; 
+        // ПОЛНОСТЬЮ ЧИСТЫЙ ПРОЕКТ (Никого в списках нет)
+        const isOwner = true; // Дает вам доступ к кнопке "Панель Владельца"
 
-        // Инициализация локальной базы данных
-        if(!localStorage.getItem('news')) localStorage.setItem('news', JSON.stringify(["Добро пожаловать в REDWOOD RP Портал!"]));
-        if(!localStorage.getItem('ideas')) localStorage.setItem('ideas', JSON.stringify([]));
-        if(!localStorage.getItem('mayorCandidates')) localStorage.setItem('mayorCandidates', JSON.stringify([]));
-        if(!localStorage.getItem('factionApplications')) localStorage.setItem('factionApplications', JSON.stringify([]));
-        if(!localStorage.getItem('licenses')) localStorage.setItem('licenses', JSON.stringify([{roblox:"Micha", tgName:"micha_dev", licenses:["Glock 17"]}]));
-        if(!localStorage.getItem('factionMembers')) localStorage.setItem('factionMembers', JSON.stringify({"ФБР":["Micha"],"МВД":[],"ДПС":[],"ПОЛИЦИЯ":[],"АДВОКАТУРА":[],"ПРОКУРАТУРА":[],"СУДЬЯ":[]}));
-        if(!localStorage.getItem('votedUsers')) localStorage.setItem('votedUsers', JSON.stringify([]));
+        // Чистая инициализация LocalStorage
+        if(!localStorage.getItem('news_v2')) localStorage.setItem('news_v2', JSON.stringify([]));
+        if(!localStorage.getItem('ideas_v2')) localStorage.setItem('ideas_v2', JSON.stringify([]));
+        if(!localStorage.getItem('mayor_v2')) localStorage.setItem('mayor_v2', JSON.stringify([]));
+        if(!localStorage.getItem('apps_v2')) localStorage.setItem('apps_v2', JSON.stringify([]));
+        if(!localStorage.getItem('licenses_v2')) localStorage.setItem('licenses_v2', JSON.stringify([]));
+        if(!localStorage.getItem('factions_v2')) localStorage.setItem('factions_v2', JSON.stringify({"ФБР":[],"МВД":[],"ДПС":[],"ПОЛИЦИЯ":[],"АДВОКАТУРА":[],"ПРОКУРАТУРА":[],"СУДЬЯ":[]}));
+        if(!localStorage.getItem('votes_v2')) localStorage.setItem('votes_v2', JSON.stringify([]));
 
-        function init() {
-            if (isOwner) {
-                document.getElementById('admin-panel-btn').style.display = 'block';
-            }
-            updateFactionCount();
+        function initApp() {
+            if (isOwner) document.getElementById('admin-panel-btn').style.display = 'block';
+            updateGlobalStats();
+            renderMayorBanner();
         }
-        init();
+        initApp();
 
-        function updateFactionCount() {
-            let members = JSON.parse(localStorage.getItem('factionMembers'));
+        function updateGlobalStats() {
+            let facData = JSON.parse(localStorage.getItem('factions_v2'));
             let count = 0;
-            Object.values(members).forEach(arr => count += arr.length);
+            Object.values(facData).forEach(arr => count += arr.length);
+            
             document.getElementById('live-factions').innerText = count;
+            document.getElementById('live-online').innerText = "0"; // Новый проект - 0 онлайн
         }
 
-        function switchScreen(screenId) {
+        function renderMayorBanner() {
+            let candidates = JSON.parse(localStorage.getItem('mayor_v2'));
+            let topCandidate = candidates.reduce((max, c) => (c.votes > max.votes ? c : max), null);
+            let banner = document.getElementById('current-mayor-info');
+            
+            if (topCandidate && topCandidate.votes > 0) {
+                banner.innerHTML = `<div style="font-size:14px; font-weight:700; color:var(--accent-orange);">👑 ${topCandidate.roblox}</div><div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Лидирует на выборах: ${topCandidate.votes} гол.</div>`;
+            } else {
+                banner.innerHTML = "Место свободно. Проводятся выборы!";
+            }
+        }
+
+        function switchScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(`screen-${screenId}`).classList.add('active');
+            const target = document.getElementById(`screen-${id}`);
+            if(target) target.classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        function goBack(screenId) { switchScreen(screenId); }
+        function switchTab(tabId) {
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            switchScreen(tabId);
+        }
+
+        function goBack(id) { switchScreen(id); }
 
         function registerProfile() {
             const roblox = document.getElementById('reg-roblox').value.trim();
             const pass = document.getElementById('reg-pass').value;
             const confirm = document.getElementById('reg-pass-confirm').value;
 
-            if(!roblox || !pass || !confirm) return alert("Заполните все поля!");
-            if(pass !== confirm) return alert("Пароли не совпадают!");
+            if(!roblox || !pass || !confirm) return alert("Пожалуйста, заполните все поля!");
+            if(pass !== confirm) return alert("Пароли профиля не совпадают!");
 
             userRoblox = roblox;
             document.getElementById('fac-app-roblox').value = roblox;
             document.getElementById('lic-roblox').value = roblox;
-            document.getElementById('lic-tg').value = tgUser.username || "no_username";
+            document.getElementById('lic-tg').value = tgUser.username ? `@${tgUser.username}` : "";
+            
+            document.getElementById('app-nav').style.display = 'flex';
             switchScreen('main');
         }
 
-        function openServers() { document.getElementById('sheet-servers').classList.add('open'); }
-        function closeServers() { document.getElementById('sheet-servers').classList.remove('open'); }
-        function openServerOne() {
+        // Логика листов (Серверы)
+        function openServersSheet() { document.getElementById('sheet-servers').classList.add('open'); }
+        function closeServersSheet() { document.getElementById('sheet-servers').classList.remove('open'); }
+        function openServerOneDetail() {
             document.getElementById('sheet-servers').classList.remove('open');
             document.getElementById('sheet-server-detail').classList.add('open');
         }
@@ -574,91 +808,107 @@
             document.getElementById('sheet-server-detail').classList.remove('open');
             document.getElementById('sheet-servers').classList.add('open');
         }
-        function clickPlayEffect() { alert("Эффект нажатия! Кнопка неактивна по ТЗ."); }
+        function playClickEffect() { alert("Имитация клика: выполняется подключение..."); }
         function copyServerCode() {
             navigator.clipboard.writeText("TestServer");
-            alert("Код 'TestServer' скопирован!");
+            alert("Код сервера 'TestServer' успешно скопирован!");
         }
 
-        // НОВОСТИ
+        // Новости
         function openNews() {
             switchScreen('news');
-            let data = JSON.parse(localStorage.getItem('news'));
-            document.getElementById('news-container').innerHTML = data.map(n => `<div class="list-item">${n}</div>`).join('');
-        }
-
-        // МЭР
-        function openMayor() {
-            switchScreen('mayor');
-            renderMayor();
-        }
-        function renderMayor() {
-            let candidates = JSON.parse(localStorage.getItem('mayorCandidates'));
-            document.getElementById('mayor-candidates').innerHTML = candidates.map(c => `
-                <div class="list-item" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>${c.roblox} — <b>${c.votes}</b> гол.</span>
-                    <button class="btn btn-primary" style="width:auto; padding:5px 10px; font-size:12px; margin:0;" onclick="voteMayor('${c.roblox}')">Голос</button>
-                </div>
-            `).join('') || "Нет кандидатов.";
-        }
-        function applyForMayor() {
-            let candidates = JSON.parse(localStorage.getItem('mayorCandidates'));
-            if(candidates.some(c => c.roblox === userRoblox)) return alert("Вы уже кандидат!");
-            candidates.push({roblox: userRoblox, votes: 0, ownerId: tgUser.id});
-            localStorage.setItem('mayorCandidates', JSON.stringify(candidates));
-            renderMayor();
-        }
-        function voteMayor(name) {
-            let voted = JSON.parse(localStorage.getItem('votedUsers'));
-            if(voted.includes(tgUser.id)) return alert("Вы уже голосовали!");
-            
-            let candidates = JSON.parse(localStorage.getItem('mayorCandidates'));
-            let target = candidates.find(c => c.roblox === name);
-            
-            if(target && target.ownerId === tgUser.id) return alert("Нельзя голосовать за себя!");
-            
-            if(target) {
-                target.votes += 1;
-                voted.push(tgUser.id);
-                localStorage.setItem('mayorCandidates', JSON.stringify(candidates));
-                localStorage.setItem('votedUsers', JSON.stringify(voted));
-                renderMayor();
+            let data = JSON.parse(localStorage.getItem('news_v2'));
+            let container = document.getElementById('news-container');
+            if(data.length === 0) {
+                container.innerHTML = '<div class="empty-placeholder">Новостей пока нет. Проект только открылся!</div>';
+            } else {
+                container.innerHTML = data.map(n => `<div class="glass-panel list-item">${n}</div>`).join('');
             }
         }
 
-        // ИДЕИ
+        // Мэр
+        function openMayor() {
+            switchScreen('mayor');
+            renderMayorList();
+        }
+        function renderMayorList() {
+            let list = JSON.parse(localStorage.getItem('mayor_v2'));
+            let container = document.getElementById('mayor-candidates');
+            if(list.length === 0) {
+                container.innerHTML = '<div class="empty-placeholder">Кандидатов нет. Станьте первым!</div>';
+            } else {
+                container.innerHTML = list.map(c => `
+                    <div class="glass-panel list-item" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><b>${c.roblox}</b><div style="font-size:11px; color:var(--text-muted);">Голосов: ${c.votes}</div></div>
+                        <button class="btn btn-green" style="width:auto; padding:6px 12px; font-size:12px;" onclick="voteMayor('${c.roblox}')">Голосовать</button>
+                    </div>
+                `).join('');
+            }
+        }
+        function applyForMayor() {
+            let list = JSON.parse(localStorage.getItem('mayor_v2'));
+            if(list.some(c => c.roblox.toLowerCase() === userRoblox.toLowerCase())) return alert("Вы уже есть в списке кандидатов!");
+            list.push({roblox: userRoblox, votes: 0, ownerId: tgUser.id});
+            localStorage.setItem('mayor_v2', JSON.stringify(list));
+            renderMayorList();
+            renderMayorBanner();
+        }
+        function voteMayor(name) {
+            let votes = JSON.parse(localStorage.getItem('votes_v2'));
+            if(votes.includes(tgUser.id)) return alert("Вы уже отдали свой голос на этих выборах!");
+
+            let list = JSON.parse(localStorage.getItem('mayor_v2'));
+            let target = list.find(c => c.roblox === name);
+            
+            if(target && target.ownerId === tgUser.id) return alert("По правилам нельзя голосовать за самого себя!");
+
+            if(target) {
+                target.votes += 1;
+                votes.push(tgUser.id);
+                localStorage.setItem('mayor_v2', JSON.stringify(list));
+                localStorage.setItem('votes_v2', JSON.stringify(votes));
+                renderMayorList();
+                renderMayorBanner();
+            }
+        }
+
+        // Идеи
         function openIdeas() {
             switchScreen('ideas');
             renderIdeas();
         }
         function renderIdeas() {
-            let list = JSON.parse(localStorage.getItem('ideas'));
-            document.getElementById('ideas-container').innerHTML = list.map(i => `<div class="list-item"><b>${i.roblox}:</b> ${i.text}</div>`).join('');
+            let list = JSON.parse(localStorage.getItem('ideas_v2'));
+            let container = document.getElementById('ideas-container');
+            if(list.length === 0) {
+                container.innerHTML = '<div class="empty-placeholder">Идей еще никто не оставлял. Будьте первыми!</div>';
+            } else {
+                container.innerHTML = list.map(i => `<div class="glass-panel list-item"><b>${i.roblox}:</b> ${i.text}</div>`).join('');
+            }
         }
         function submitIdea() {
-            const text = document.getElementById('idea-input').value.trim();
+            let text = document.getElementById('idea-input').value.trim();
             if(!text) return;
-            let list = JSON.parse(localStorage.getItem('ideas'));
+            let list = JSON.parse(localStorage.getItem('ideas_v2'));
             list.push({roblox: userRoblox, text: text});
-            localStorage.setItem('ideas', JSON.stringify(list));
+            localStorage.setItem('ideas_v2', JSON.stringify(list));
             document.getElementById('idea-input').value = "";
             renderIdeas();
         }
 
-        // ПРАВИЛА
+        // Правила
         function openRules() { switchScreen('rules'); }
 
-        // ФРАКЦИИ
+        // Фракции
         const descriptions = {
-            "ФБР": "Федеральное Бюро Расследований. Важнейшие гос. тайны и расследования.",
-            "МВД": "Министерство Внутренних Дел. Безопасность и правопорядок.",
-            "ДПС": "Дорожно-Патрульная Служба. Контроль дорог штата.",
-            "ПОЛИЦИЯ": "Городской департамент полиции. Вызовы граждан и патруль.",
-            "АДВОКАТУРА": "Защита прав граждан в суде.",
-            "ПРОКУРАТУРА": "Контроль исполнения законов ведомствами.",
-            "СУДЬЯ": "Вынесение верховных приговоров."
+            "ФБР": "Федеральное Бюро Расследований. Национальная безопасность и сложные кейсы.",
+            "МВД": "Министерство Внутренних Дел. Координация работы структур порядка.",
+            "ДПС": "Дорожно-Патрульная Служба. Регулирование трафика и скоростного режима.",
+            "ПОЛИЦИЯ": "Городской отдел полиции. Оперативное реагирование и патруль.",
+            "АДВОКАТУРА": "Защита законных прав граждан и юридическая помощь в суде.",
+            "ПРОКУРАТУРА": "Государственный надзор за ведомствами и обвинения.",
+            "СУДЬЯ": "Верховная судебная власть, суды и официальные ордера."
         };
-        function openFactions() { switchScreen('factions'); }
         function selectFaction(name) {
             currentFaction = name;
             document.getElementById('fac-title').innerText = name;
@@ -667,116 +917,149 @@
             renderFactionMembers();
         }
         function renderFactionMembers() {
-            let members = JSON.parse(localStorage.getItem('factionMembers'))[currentFaction] || [];
-            document.getElementById('fac-members').innerHTML = members.map(m => `<div class="list-item">${m}</div>`).join('') || "Участников нет";
+            let facs = JSON.parse(localStorage.getItem('factions_v2'));
+            let members = facs[currentFaction] || [];
+            let container = document.getElementById('fac-members');
+            if(members.length === 0) {
+                container.innerHTML = '<div class="empty-placeholder">В организации сейчас нет сотрудников. Проект новый!</div>';
+            } else {
+                container.innerHTML = members.map(m => `<div class="glass-panel list-item">🔹 ${m}</div>`).join('');
+            }
         }
         function openFactionApply() { switchScreen('faction-apply'); }
         function submitFactionApply() {
-            const reason = document.getElementById('fac-app-reason').value.trim();
-            if(!reason) return alert("Напишите причину!");
-            let apps = JSON.parse(localStorage.getItem('factionApplications'));
+            let reason = document.getElementById('fac-app-reason').value.trim();
+            if(!reason) return alert("Напишите развернутую причину.");
+            
+            let apps = JSON.parse(localStorage.getItem('apps_v2'));
             apps.push({faction: currentFaction, roblox: userRoblox, reason: reason});
-            localStorage.setItem('factionApplications', JSON.stringify(apps));
-            alert("Заявка отправлена владельцу!");
+            localStorage.setItem('apps_v2', JSON.stringify(apps));
+            
+            alert("Ваше заявление отправлено Лидеру/Владельцу!");
             document.getElementById('fac-app-reason').value = "";
             switchScreen('faction-view');
         }
 
-        // ЛИЦЕНЗИИ
-        function openLicenses() {
-            switchScreen('licenses');
-            showLicenseTab('registry');
-            renderLicenses();
-        }
+        // Лицензии
         function showLicenseTab(tab) {
             document.getElementById('lic-tab-registry').style.display = (tab === 'registry') ? 'block' : 'none';
             document.getElementById('lic-tab-buy').style.display = (tab === 'buy') ? 'block' : 'none';
+            
+            let rBtn = document.getElementById('btn-tab-lic-reg');
+            let bBtn = document.getElementById('btn-tab-lic-buy');
+            if(tab === 'registry') {
+                rBtn.style.borderColor = 'var(--primary-green)';
+                bBtn.style.borderColor = 'var(--glass-border)';
+            } else {
+                bBtn.style.borderColor = 'var(--primary-green)';
+                rBtn.style.borderColor = 'var(--glass-border)';
+            }
         }
-        function selectPayment(p) { if(p==='cash') document.getElementById('lic-form').style.display='block'; }
+        function selectPayment(type) { if(type === 'cash') document.getElementById('lic-form').style.display = 'block'; }
         
         document.querySelectorAll('.lic-cb').forEach(cb => {
             cb.addEventListener('change', () => {
                 if(document.querySelectorAll('.lic-cb:checked').length > 5) {
                     cb.checked = false;
-                    alert("Максимум 5 лицензий!");
+                    alert("Разрешено выбрать не более 5 лицензий в заявке!");
                 }
             });
         });
+
         function submitLicense() {
-            const r = document.getElementById('lic-roblox').value.trim();
-            const t = document.getElementById('lic-tg').value.trim();
+            let rob = document.getElementById('lic-roblox').value.trim();
+            let tgN = document.getElementById('lic-tg').value.trim();
             let selected = Array.from(document.querySelectorAll('.lic-cb:checked')).map(c => c.value);
-            if(!r || !t || selected.length === 0) return alert("Заполните форму!");
+
+            if(!rob || !tgN || selected.length === 0) return alert("Заполните форму заказа полностью!");
             
-            let list = JSON.parse(localStorage.getItem('licenses'));
-            list.push({roblox: r, tgName: t, licenses: selected});
-            localStorage.setItem('licenses', JSON.stringify(list));
-            alert("Лицензия добавлена в реестр!");
+            let list = JSON.parse(localStorage.getItem('licenses_v2'));
+            list.push({roblox: rob, tgName: tgN, licenses: selected});
+            localStorage.setItem('licenses_v2', JSON.stringify(list));
+            
+            alert("Лицензии успешно оформлены и внесены в реестр!");
+            document.querySelectorAll('.lic-cb').forEach(c => c.checked = false);
             showLicenseTab('registry');
             renderLicenses();
         }
+
         function renderLicenses() {
-            let list = JSON.parse(localStorage.getItem('licenses'));
+            let list = JSON.parse(localStorage.getItem('licenses_v2'));
             displayLicenses(list);
         }
+
         function displayLicenses(arr) {
-            document.getElementById('lic-list').innerHTML = arr.map(l => `
-                <div class="list-item">
-                    <strong>${l.roblox}</strong> (@${l.tgName})<br>
-                    <span style="color:var(--primary-green); font-size:12px;">${l.licenses.join(', ')}</span>
-                </div>
-            `).join('');
+            let container = document.getElementById('lic-list');
+            if(arr.length === 0) {
+                container.innerHTML = '<div class="empty-placeholder">Реестр пуст. Лицензии еще никто не покупал.</div>';
+            } else {
+                container.innerHTML = arr.map(l => `
+                    <div class="glass-panel list-item">
+                        <div style="font-weight:700;">${l.roblox} <span style="color:var(--text-muted); font-size:12px; font-weight:400;">(${l.tgName})</span></div>
+                        <div style="color:var(--primary-green); font-size:12px; margin-top:4px; font-weight:600;">${l.licenses.join(', ')}</div>
+                    </div>
+                `).join('');
+            }
         }
+
         function searchLicenses() {
-            let q = document.getElementById('lic-search').value.toLowerCase();
-            let list = JSON.parse(localStorage.getItem('licenses'));
-            let filtered = list.filter(l => l.roblox.toLowerCase().includes(q));
+            let query = document.getElementById('lic-search').value.toLowerCase();
+            let list = JSON.parse(localStorage.getItem('licenses_v2'));
+            let filtered = list.filter(l => l.roblox.toLowerCase().includes(query));
             displayLicenses(filtered);
         }
 
-        // АДМИНКА
+        // Админка владельца
         function openAdmin() {
             switchScreen('admin');
             renderAdminApps();
         }
         function adminPostNews() {
-            const text = document.getElementById('admin-news-input').value.trim();
+            let text = document.getElementById('admin-news-input').value.trim();
             if(!text) return;
-            let news = JSON.parse(localStorage.getItem('news'));
+            let news = JSON.parse(localStorage.getItem('news_v2'));
             news.unshift(text);
-            localStorage.setItem('news', JSON.stringify(news));
+            localStorage.setItem('news_v2', JSON.stringify(news));
             document.getElementById('admin-news-input').value = "";
-            alert("Опубликовано!");
+            alert("Новость успешно добавлена!");
         }
         function renderAdminApps() {
-            let apps = JSON.parse(localStorage.getItem('factionApplications'));
-            document.getElementById('admin-faction-apps').innerHTML = apps.map((a, idx) => `
-                <div class="list-item">
-                    <b>Фракция:</b> ${a.faction}<br>
-                    <b>Ник:</b> ${a.roblox}<br>
-                    <b>Причина:</b> ${a.reason}
-                    <div style="margin-top:10px; display:flex; gap:10px;">
-                        <button class="btn btn-primary" style="margin:0; padding:6px;" onclick="resolveApp(${idx}, true)">Принять</button>
-                        <button class="btn btn-dark" style="margin:0; padding:6px; background:#ef4444;" onclick="resolveApp(${idx}, false)">Отказ</button>
+            let apps = JSON.parse(localStorage.getItem('apps_v2'));
+            let container = document.getElementById('admin-faction-apps');
+            if(apps.length === 0) {
+                container.innerHTML = '<div class="empty-placeholder">Новых заявлений нет.</div>';
+            } else {
+                container.innerHTML = apps.map((a, idx) => `
+                    <div class="glass-panel list-item">
+                        <b>Фракция:</b> ${a.faction}<br>
+                        <b>Игрок:</b> ${a.roblox}<br>
+                        <b>Причина:</b> ${a.reason}
+                        <div style="display:flex; gap:10px; margin-top:12px;">
+                            <button class="btn btn-green" style="padding:6px; margin:0;" onclick="resolveApp(${idx}, true)">Принять</button>
+                            <button class="btn btn-outline" style="padding:6px; margin:0; border-color:#ef4444; color:#ef4444;" onclick="resolveApp(${idx}, false)">Отказ</button>
+                        </div>
                     </div>
-                </div>
-            `).join('') || "Нет заявок.";
+                `).join('');
+            }
         }
         function resolveApp(idx, accept) {
-            let apps = JSON.parse(localStorage.getItem('factionApplications'));
+            let apps = JSON.parse(localStorage.getItem('apps_v2'));
             let app = apps[idx];
             if(accept) {
-                let members = JSON.parse(localStorage.getItem('factionMembers'));
-                if(!members[app.faction].includes(app.roblox)) {
-                    members[app.faction].push(app.roblox);
-                    localStorage.setItem('factionMembers', JSON.stringify(members));
+                let facs = JSON.parse(localStorage.getItem('factions_v2'));
+                if(!facs[app.faction].includes(app.roblox)) {
+                    facs[app.faction].push(app.roblox);
+                    localStorage.setItem('factions_v2', JSON.stringify(facs));
                 }
             }
             apps.splice(idx, 1);
-            localStorage.setItem('factionApplications', JSON.stringify(apps));
+            localStorage.setItem('apps_v2', JSON.stringify(apps));
             renderAdminApps();
-            updateFactionCount();
+            updateGlobalStats();
         }
+
+        // Изначальный вызов реестра лицензий
+        renderLicenses();
     </script>
 </body>
 </html>

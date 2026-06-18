@@ -2,19 +2,19 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>REDWOOD RP PORTAL</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --main-bg: #090d0f;
-            --panel-bg: rgba(13, 20, 24, 0.75);
-            --panel-blur: blur(20px);
-            --panel-border: rgba(255, 255, 255, 0.06);
+            --main-bg: #050708;
+            --panel-bg: rgba(13, 20, 24, 0.65);
+            --panel-blur: blur(25px);
+            --panel-border: rgba(255, 255, 255, 0.05);
             --primary-green: #71b822;
             --bright-green: #7fe61e;
             --text-main: #ffffff;
-            --text-muted: #7d8e99;
+            --text-muted: #6f808c;
             --accent-orange: #d98218;
             --danger-red: #ef4444;
         }
@@ -31,23 +31,22 @@
             background-color: var(--main-bg);
             color: var(--text-main);
             min-height: 100vh;
-            padding: 20px 16px 100px 16px;
+            padding: 24px 16px 120px 16px;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Бесконечные движущиеся обои (Кольца Unity) */
+        /* Движущиеся Кольца (Вшитая SVG-графика на базе скрина) */
         .animated-bg {
             position: fixed;
             top: 0;
             left: 0;
-            width: 200%; /* Двойная ширина для бесшовной анимации */
+            width: 200%;
             height: 100%;
-            background: url('iphone-black-unity-2025-wallpapers-are-awesome-main-1.jpg') repeat-x;
-            background-size: contain;
-            opacity: 0.18; /* Оптимальная прозрачность для читаемости текста */
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='1000' viewBox='0 0 800 1000'%3E%3Cpath d='M-100,700 Q150,300 400,650 T900,400 M-100,730 Q150,330 400,680 T900,430 M-100,760 Q150,360 400,710 T900,460 M-100,600 Q200,900 500,500 T1000,800 M-100,630 Q200,930 500,530 T1000,830' fill='none' stroke='white' stroke-width='14' opacity='0.08'/%3E%3C/svg%3E") repeat-x;
+            background-size: cover;
             z-index: -1;
-            animation: moveBg 35s linear infinite;
+            animation: moveBg 28s linear infinite;
             pointer-events: none;
         }
 
@@ -56,23 +55,21 @@
             100% { transform: translate3d(-50%, 0, 0); }
         }
 
-        /* Экраны */
+        /* Экранная навигация */
         .screen {
             display: none;
-            animation: fadeIn 0.25s ease-out;
-            position: relative;
-            z-index: 2;
+            animation: fadeIn 0.22s cubic-bezier(0.1, 0.8, 0.25, 1);
         }
         .screen.active {
             display: block;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.98) translateY(4px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* Стеклянные карточки */
+        /* Компоненты UI */
         .glass-card {
             background: var(--panel-bg);
             backdrop-filter: var(--panel-blur);
@@ -81,19 +78,21 @@
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
 
-        /* Эффект наведения и выделения для карточек-кнопок */
-        .glass-card[onclick]:hover, .menu-item-card:hover, .pay-card:hover {
+        /* Эффект свечения при наведении */
+        .glass-card[onclick]:hover, .menu-item-card:hover, .pay-card:hover, .back-circle-btn:hover {
             border-color: var(--bright-green);
-            background: rgba(20, 32, 38, 0.85);
+            background: rgba(20, 32, 38, 0.75);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(127, 230, 30, 0.08);
+            box-shadow: 0 8px 24px rgba(127, 230, 30, 0.12);
             cursor: pointer;
         }
+        .glass-card[onclick]:active, .menu-item-card:active {
+            transform: translateY(1px);
+        }
 
-        /* Хедеры страниц */
         .page-header {
             display: flex;
             align-items: center;
@@ -103,7 +102,7 @@
         .back-circle-btn {
             width: 42px;
             height: 42px;
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 50%;
             display: flex;
@@ -111,13 +110,7 @@
             justify-content: center;
             color: var(--text-main);
             font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .back-circle-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--bright-green);
-            color: var(--bright-green);
+            transition: all 0.2s;
         }
 
         .page-header-info h1 {
@@ -125,36 +118,33 @@
             font-weight: 800;
             color: var(--bright-green);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         .page-header-info p {
             font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin-top: 1px;
         }
 
-        /* Разделители категорий */
         .category-divider {
-            font-size: 10px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin: 18px 0 10px 4px;
+            letter-spacing: 1.2px;
+            margin: 20px 0 12px 2px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
-        .category-divider::before { content: '🏛️'; font-size: 11px; }
-        .category-divider.server::before { content: '⚖️'; }
-        .category-divider.other::before { content: '🛡️'; }
+        .category-divider::before { content: '🏛️'; }
+        .category-divider.server::before { content: '⚙️'; }
 
-        /* Сетка меню */
+        /* Меню плитки */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
+            margin-bottom: 8px;
         }
         .menu-item-card {
             background: var(--panel-bg);
@@ -162,13 +152,11 @@
             border: 1px solid var(--panel-border);
             border-radius: 16px;
             padding: 16px;
-            min-height: 100px;
+            min-height: 104px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
         .menu-card-icon {
             width: 34px;
@@ -180,68 +168,8 @@
             justify-content: center;
             font-size: 16px;
         }
-        .menu-card-title { font-size: 14px; font-weight: 700; color: var(--text-main); margin-top: 14px; }
+        .menu-card-title { font-size: 14px; font-weight: 700; color: var(--text-main); margin-top: 12px; }
         .menu-card-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-        /* Пульс города */
-        .pulse-box {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .pulse-stat-num { font-size: 18px; font-weight: 800; color: #2ecc71; }
-        .pulse-stat-num.blue { color: #3498db; }
-        .pulse-stat-num.pink { color: #e84393; }
-        .pulse-stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; font-weight: 600; }
-
-        /* Табы */
-        .unified-tabs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 4px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.02);
-        }
-        .unified-tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 12px;
-            font-size: 12px;
-            font-weight: 800;
-            border-radius: 10px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: all 0.2s;
-        }
-        .unified-tab-btn:hover { color: #fff; }
-        .unified-tab-btn.active {
-            background: var(--bright-green);
-            color: #040607;
-        }
-
-        /* Выбор способов оплаты */
-        .pay-methods-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .pay-card {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid var(--panel-border);
-            border-radius: 14px;
-            padding: 12px;
-            transition: all 0.2s ease;
-        }
-        .pay-card.active {
-            border-color: var(--accent-orange);
-            background: rgba(217, 130, 24, 0.08);
-        }
 
         /* Поля ввода */
         .input-wrapper { margin-bottom: 14px; }
@@ -251,64 +179,25 @@
             text-transform: uppercase;
             margin-bottom: 6px;
             font-weight: 700;
-            letter-spacing: 0.5px;
         }
         .styled-input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 14px;
             border-radius: 12px;
             color: #fff;
             font-size: 13px;
             outline: none;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
         }
         .styled-input:focus {
             border-color: var(--bright-green);
             background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 12px rgba(127, 230, 30, 0.1);
         }
 
-        /* Теги оружия */
-        .weapon-category-title {
-            font-size: 10px;
-            color: var(--bright-green);
-            font-weight: 800;
-            text-transform: uppercase;
-            margin: 16px 0 8px 2px;
-        }
-        .weapon-tags-layout {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .weapon-tag-node { position: relative; }
-        .weapon-tag-node input { position: absolute; opacity: 0; cursor: pointer; }
-        .weapon-tag-visual {
-            display: inline-block;
-            background: #141a1e;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            color: #8a9ba8;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .weapon-tag-visual:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-        .weapon-tag-node input:checked + .weapon-tag-visual {
-            background: rgba(113, 184, 34, 0.2);
-            border-color: var(--bright-green);
-            color: var(--bright-green);
-            box-shadow: 0 0 10px rgba(127, 230, 30, 0.15);
-        }
-
-        /* Главная кнопка подтверждения */
+        /* Кнопки действий */
         .action-submit-btn {
             width: 100%;
             background: linear-gradient(90deg, #5fa219, #79cc22);
@@ -319,73 +208,87 @@
             font-size: 13px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(113, 184, 34, 0.2);
-            margin-top: 15px;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
         .action-submit-btn:hover {
             background: linear-gradient(90deg, #6cb81c, #8ae627);
-            transform: translateY(-1px);
             box-shadow: 0 6px 24px rgba(113, 184, 34, 0.35);
         }
-        .action-submit-btn:active {
-            transform: translateY(1px);
+
+        /* Вкладки */
+        .unified-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .unified-tab-btn {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 12px; font-size: 12px; font-weight: 800; border-radius: 10px;
+            text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+        }
+        .unified-tab-btn.active { background: var(--bright-green); color: #000; }
+
+        /* Оружие */
+        .weapon-tags-layout { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+        .weapon-tag-node input { position: absolute; opacity: 0; }
+        .weapon-tag-visual {
+            display: inline-block; background: #111619; border: 1px solid rgba(255,255,255,0.06);
+            padding: 8px 14px; border-radius: 20px; font-size: 11px; color: #8a9ba8; cursor: pointer;
+        }
+        .weapon-tag-node input:checked + .weapon-tag-visual {
+            background: rgba(113,184,34,0.2); border-color: var(--bright-green); color: var(--bright-green);
         }
 
-        /* Универсальный тост уведомлений снизу (изменен под Скрин 2) */
+        /* Нижний тост-попап */
         .toast-error-popup {
             position: fixed;
-            bottom: -80px;
-            left: 16px;
-            right: 16px;
-            background: #06090b;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 99999;
-            transition: bottom 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            bottom: -100px; left: 16px; right: 16px;
+            background: #06090b; border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px; padding: 14px 16px;
+            display: flex; align-items: center; gap: 12px; z-index: 99999;
+            transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2);
         }
-        .toast-error-popup.visible { bottom: calc(20px + env(safe-area-inset-bottom)); }
+        .toast-error-popup.visible { bottom: calc(24px + env(safe-area-inset-bottom)); }
         .toast-icon-circle {
-            width: 20px; height: 20px;
-            background: #fff; color: #000;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            width: 20px; height: 20px; background: #fff; color: #000;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-weight: 900; font-size: 12px;
         }
 
-        /* Нижний Навбар */
+        /* Навигация */
         .bottom-navigation-bar {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            background: rgba(9, 13, 15, 0.92);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255,255,255,0.04);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(9, 13, 15, 0.94); border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-around; padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
             z-index: 999;
         }
         .nav-tab-item {
             display: flex; flex-direction: column; align-items: center;
             color: var(--text-muted); font-size: 10px; font-weight: 600;
-            background: none; border: none; width: 20%; cursor: pointer;
-            transition: all 0.2s ease;
+            background: none; border: none; cursor: pointer; transition: all 0.2s;
         }
-        .nav-tab-item:hover { color: #fff; }
         .nav-tab-item.active { color: var(--bright-green); }
-        .nav-tab-icon { font-size: 18px; margin-bottom: 3px; }
+        .nav-tab-icon { font-size: 18px; margin-bottom: 2px; }
 
-        /* Реестры */
-        .registry-item-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px; background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; margin-bottom: 8px;
+        /* Профиль дизайн */
+        .profile-main-card {
+            background: var(--panel-bg); border: 1px solid var(--panel-border);
+            border-radius: 20px; padding: 20px; margin-bottom: 16px; position: relative;
+        }
+        .profile-avatar {
+            width: 56px; height: 56px; background: #16c79a; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: 800; color: #fff;
+        }
+        .profile-status-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(127,230,30,0.1); border: 1px solid rgba(127,230,30,0.2);
+            color: var(--bright-green); font-size: 11px; padding: 4px 8px; border-radius: 8px; margin-top: 6px;
         }
     </style>
 </head>
@@ -394,32 +297,28 @@
     <div class="animated-bg"></div>
 
     <div id="screen-reg" class="screen active">
-        <div style="text-align: center; margin: 50px 0 30px 0;">
-            <h1 style="color: var(--bright-green); font-size: 24px; font-weight: 800; letter-spacing: 1px;">REDWOOD RP</h1>
-            <p style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; margin-top: 4px;">Вход в аккаунт</p>
+        <div style="text-align: center; margin: 60px 0 30px 0;">
+            <h1 style="color: var(--bright-green); font-size: 26px; font-weight: 900; letter-spacing: 1px;">REDWOOD RP</h1>
+            <p style="color: var(--text-muted); font-size: 11px; text-transform: uppercase; margin-top: 4px;">Вход в игровой портал</p>
         </div>
         <div class="glass-card">
             <div class="input-wrapper">
-                <div class="input-label">Ваш игровой ник в Roblox</div>
-                <input type="text" id="reg-roblox" class="styled-input" placeholder="Пример: NickName">
-            </div>
-            <div class="input-wrapper">
-                <div class="input-label">Пароль</div>
-                <input type="password" id="reg-pass" class="styled-input" placeholder="••••••••">
+                <div class="input-label">Ваш никнейм в Roblox</div>
+                <input type="text" id="reg-roblox" class="styled-input" placeholder="Введите имя аккаунта">
             </div>
         </div>
-        <button class="action-submit-btn" onclick="registerProfile()">Войти в систему</button>
+        <button class="action-submit-btn" onclick="registerProfile()">Авторизоваться</button>
     </div>
 
     <div id="screen-main" class="screen">
         <div style="margin-bottom: 20px;">
             <h1 style="font-size: 22px; font-weight: 900; color: var(--bright-green);">REDWOOD RP</h1>
-            <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">РП Портал игрока</p>
+            <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">РП ПОРТАЛ</p>
         </div>
 
-        <div class="glass-card" style="display: flex; align-items: center; justify-content: space-between;" onclick="showSystemToast('Сервер доступен во вкладке выбора!')">
+        <div class="glass-card" style="display: flex; align-items: center; justify-content: space-between;" onclick="showSystemToast('Вы уже подключены к активной сессии сервера!')">
             <div style="display: flex; align-items: center; gap: 14px;">
-                <div style="width: 40px; height: 40px; background: rgba(113, 184, 34, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--bright-green);">🖥️</div>
+                <div style="width: 40px; height: 40px; background: rgba(113, 184, 34, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--bright-green);">🖥                   </div>
                 <div>
                     <div style="font-size: 14px; font-weight: 800;">Сервер 1</div>
                     <div style="font-size: 11px; color: var(--bright-green); display: flex; align-items: center; gap: 4px; margin-top: 2px;">
@@ -431,32 +330,21 @@
         </div>
 
         <div class="glass-card">
-            <div style="font-size: 10px; font-weight: 700; color: #f1c40f; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">⚡ Пульс города <span style="float: right; opacity: 0.5;">LIVE</span></div>
-            <div class="pulse-box">
-                <div>
-                    <div class="pulse-stat-num">322</div>
-                    <div class="pulse-stat-label">Игроков</div>
-                </div>
-                <div>
-                    <div class="pulse-stat-num blue">19</div>
-                    <div class="pulse-stat-label">Домов</div>
-                </div>
-                <div>
-                    <div class="pulse-stat-num pink" id="main-stat-fac">0</div>
-                    <div class="pulse-stat-label">В фракциях</div>
-                </div>
+            <div style="font-size: 10px; font-weight: 700; color: #f1c40f; text-transform: uppercase; margin-bottom: 12px;">⚡ ПУЛЬС ГОРОДА</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); text-align: center;">
+                <div><div style="font-size: 18px; font-weight: 800; color:#2ecc71;">322</div><div style="font-size:9px; color:var(--text-muted);">ИГРОКОВ</div></div>
+                <div><div style="font-size: 18px; font-weight: 800; color:#3498db;">19</div><div style="font-size:9px; color:var(--text-muted);">ДОМОВ</div></div>
+                <div><div style="font-size: 18px; font-weight: 800; color:#e84393;">147</div><div style="font-size:9px; color:var(--text-muted);">В ФРАКЦИЯХ</div></div>
             </div>
         </div>
 
-        <div class="glass-card" style="background: linear-gradient(180deg, rgba(217,130,24,0.06) 0%, rgba(20,28,34,0.75) 100%); border-color: rgba(217,130,24,0.15);">
-            <div style="font-size: 10px; font-weight: 700; color: var(--accent-orange); text-transform: uppercase; letter-spacing: 0.5px;">
-                <span>👑 Текущий мэр города</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px; margin-top: 10px; padding: 4px 0;">
-                <div style="width: 38px; height: 38px; background: rgba(217,130,24,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">🗳️</div>
+        <div class="glass-card" style="border-color: rgba(217,130,24,0.15);">
+            <div style="font-size: 10px; font-weight: 700; color: var(--accent-orange); text-transform: uppercase;">👑 ТЕКУЩИЙ МЭР ГОРОДА</div>
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
+                <div style="width: 38px; height: 38px; background: rgba(217,130,24,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">🗳️</div>
                 <div>
-                    <div style="font-size: 13px; font-weight: 700; color: #fff;">Мэр пока отсутствует</div>
-                    <div style="font-size: 11px; color: var(--accent-orange); margin-top: 2px;">Идёт активное голосование штата</div>
+                    <div style="font-size: 13px; font-weight: 700;">Мэр пока отсутствует</div>
+                    <div style="font-size: 11px; color: var(--accent-orange); margin-top: 2px;">идёт голосование</div>
                 </div>
             </div>
         </div>
@@ -465,31 +353,35 @@
         <div class="menu-grid">
             <div class="menu-item-card" onclick="openNews()">
                 <div class="menu-card-icon">📰</div>
-                <div>
-                    <div class="menu-card-title">Новости</div>
-                    <div class="menu-card-desc">Последние события</div>
-                </div>
+                <div><div class="menu-card-title">Новости</div><div class="menu-card-desc">События штата</div></div>
             </div>
             <div class="menu-item-card" onclick="openMayor()">
                 <div class="menu-card-icon">🗳️</div>
-                <div>
-                    <div class="menu-card-title">Выборы мэра</div>
-                    <div class="menu-card-desc">Подать заявление</div>
-                </div>
+                <div><div class="menu-card-title">Выборы мэра</div><div class="menu-card-desc">Подать заявку</div></div>
             </div>
             <div class="menu-item-card" onclick="switchScreen('ideas')">
                 <div class="menu-card-icon">📢</div>
-                <div>
-                    <div class="menu-card-title">Голос места</div>
-                    <div class="menu-card-desc">Жалобы и идеи</div>
-                </div>
+                <div><div class="menu-card-title">Голос места</div><div class="menu-card-desc">Идеи и жалобы</div></div>
             </div>
             <div class="menu-item-card" onclick="switchScreen('rules')">
                 <div class="menu-card-icon">📜</div>
-                <div>
-                    <div class="menu-card-title">Правила</div>
-                    <div class="menu-card-desc">Официальный кодекс</div>
-                </div>
+                <div><div class="menu-card-title">Правила</div><div class="menu-card-desc">Конституция</div></div>
+            </div>
+        </div>
+
+        <div class="category-divider server">Сервер</div>
+        <div class="menu-grid">
+            <div class="menu-item-card" onclick="openFactions()">
+                <div class="menu-card-icon">🛡️</div>
+                <div><div class="menu-card-title">Фракции</div><div class="menu-card-desc">Вступление и состав</div></div>
+            </div>
+            <div class="menu-item-card" onclick="openLicenses()">
+                <div class="menu-card-icon">💳</div>
+                <div><div class="menu-card-title">Лицензии</div><div class="menu-card-desc">Оружие и права</div></div>
+            </div>
+            <div class="menu-item-card" onclick="showSystemToast('Раздел Недвижимости временно на техобслуживании')">
+                <div class="menu-card-icon">🏠</div>
+                <div><div class="menu-card-title">Недвижимость</div><div class="menu-card-desc">Покупка домов</div></div>
             </div>
         </div>
     </div>
@@ -497,91 +389,54 @@
     <div id="screen-mayor" class="screen">
         <div class="page-header">
             <div class="back-circle-btn" onclick="switchScreen('main')">←</div>
-            <div class="page-header-info">
-                <h1>Выборы мэра</h1>
-                <p>Регистрация кандидатов</p>
-            </div>
+            <div class="page-header-info"><h1>Выборы мэра</h1><p>Анкета Кандидата</p></div>
         </div>
-
         <div class="glass-card">
             <div class="input-wrapper">
-                <div class="input-label">Ваш игровой ник в Roblox</div>
-                <input type="text" id="mayor-input-roblox" class="styled-input" readonly>
+                <div class="input-label">1. Ник в Роблоксе</div>
+                <input type="text" id="mayor-nick" class="styled-input" readonly>
             </div>
             <div class="input-wrapper">
-                <div class="input-label">Почему вы хотите стать мэром?</div>
-                <textarea id="mayor-input-reason" class="styled-input" rows="4" style="resize: none;" placeholder="Опишите вашу предвыборную программу..."></textarea>
+                <div class="input-label">2. Почему хочет стать мэром</div>
+                <textarea id="mayor-reason" class="styled-input" rows="4" style="resize:none;" placeholder="Опишите ваши цели..."></textarea>
             </div>
         </div>
         <button class="action-submit-btn" onclick="submitMayorApply()">Отправить Анкету</button>
-
-        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin: 20px 0 10px 2px;">Зарегистрированные кандидаты</div>
+        <div style="font-size: 11px; color:var(--text-muted); font-weight:700; margin: 20px 0 10px 2px; text-transform:uppercase;">Поданные заявки кандидатов</div>
         <div id="mayor-candidates-list"></div>
     </div>
 
     <div id="screen-licenses" class="screen">
         <div class="page-header">
             <div class="back-circle-btn" onclick="switchScreen('main')">←</div>
-            <div class="page-header-info">
-                <h1>Лицензии</h1>
-                <p>Реестр МВД и оформление</p>
-            </div>
+            <div class="page-header-info"><h1>Лицензии</h1><p>Реестр и Оформление</p></div>
         </div>
-
         <div class="unified-tabs">
             <button id="tab-lic-reg" class="unified-tab-btn active" onclick="switchLicTab('registry')">Реестр</button>
             <button id="tab-lic-buy" class="unified-tab-btn" onclick="switchLicTab('buy')">Оформить</button>
         </div>
 
         <div id="lic-page-registry">
-            <div class="input-wrapper">
-                <input type="text" id="lic-search-input" class="styled-input" placeholder="Поиск по нику..." oninput="renderLicenseRegistry()">
-            </div>
-            <div id="lic-registry-container"></div>
+            <input type="text" id="lic-search-input" class="styled-input" placeholder="Поиск лицензии по нику..." oninput="renderLicenseRegistry()">
+            <div id="lic-registry-container" style="margin-top:12px;"></div>
         </div>
 
-        <div id="lic-page-buy" style="display: none;">
-            <div class="input-label">Тип оплаты</div>
-            <div class="pay-methods-grid">
-                <div class="pay-card active">
-                    <div style="font-size: 13px; font-weight: 800; color: #f1c40f;">💵 Деньги</div>
-                    <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">4000$ — на рассмотрение</div>
-                </div>
+        <div id="lic-page-buy" style="display:none;">
+            <div class="glass-card" style="border-color: rgba(217,130,24,0.2); background:rgba(217,130,24,0.03);">
+                <div style="font-size:12px; font-weight:800; color:var(--accent-orange);">💵 ОПЛАТА 4000$</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">Перевод на ник в игре: <b style="color:#fff;">VKADOSIK1234</b></div>
             </div>
-
-            <div class="glass-card" style="border-color: rgba(217, 130, 24, 0.2); background: rgba(217, 130, 24, 0.02); margin-bottom: 16px;">
-                <div style="font-size: 12px; font-weight: 800; color: var(--accent-orange);">💵 Оплата 4000$</div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Перевод на ник в игре: <b style="color:#fff;">VKADOSIK1234</b></div>
-            </div>
-
             <div class="glass-card">
-                <div class="input-wrapper">
-                    <div class="input-label">Ваш Roblox ник</div>
-                    <input type="text" id="form-lic-roblox" class="styled-input" readonly>
-                </div>
-                <div class="input-wrapper">
-                    <div class="input-label">Telegram @user</div>
-                    <input type="text" id="form-lic-tg" class="styled-input" placeholder="@username">
-                </div>
-
-                <div class="weapon-category-title">Огнестрельное (Максимум 5 предметов)</div>
+                <div class="input-wrapper"><div class="input-label">Ваш ник</div><input type="text" id="form-lic-roblox" class="styled-input" readonly></div>
+                <div class="weapon-category-title" style="font-size:11px; color:var(--bright-green); font-weight:700; margin-bottom:6px;">ВЫБЕРИТЕ ОРУЖИЕ (МАКСИМУМ 5)</div>
                 <div class="weapon-tags-layout">
                     <label class="weapon-tag-node"><input type="checkbox" class="lic-weapon-cb" value="Glock 17" onchange="validateMaxWeapons(this)"><span class="weapon-tag-visual">Glock 17</span></label>
                     <label class="weapon-tag-node"><input type="checkbox" class="lic-weapon-cb" value="MP5" onchange="validateMaxWeapons(this)"><span class="weapon-tag-visual">MP5</span></label>
-                    <label class="weapon-tag-node"><input type="checkbox" class="lic-weapon-cb" value="M58B Shotgun" onchange="validateMaxWeapons(this)"><span class="weapon-tag-visual">M58B Shotgun</span></label>
                     <label class="weapon-tag-node"><input type="checkbox" class="lic-weapon-cb" value="M4 Carbine" onchange="validateMaxWeapons(this)"><span class="weapon-tag-visual">M4 Carbine</span></label>
                     <label class="weapon-tag-node"><input type="checkbox" class="lic-weapon-cb" value="G36" onchange="validateMaxWeapons(this)"><span class="weapon-tag-visual">G36</span></label>
                     <label class="weapon-tag-node"><input type="checkbox" class="lic-weapon-cb" value="Sniper" onchange="validateMaxWeapons(this)"><span class="weapon-tag-visual">Sniper</span></label>
                 </div>
-
-                <div class="weapon-category-title">Ближний бой</div>
-                <div class="weapon-tags-layout">
-                    <label class="weapon-tag-node"><input type="checkbox" class="lic-weapon-cb" value="Bayonet" onchange="validateMaxWeapons(this)"><span class="weapon-tag-visual">Bayonet</span></label>
-                    <label class="weapon-tag-node"><input type="checkbox" class="lic-weapon-cb" value="Machete" onchange="validateMaxWeapons(this)"><span class="weapon-tag-visual">Machete</span></label>
-                    <label class="weapon-tag-node"><input type="checkbox" class="lic-weapon-cb" value="Baseball Bat" onchange="validateMaxWeapons(this)"><span class="weapon-tag-visual">Baseball Bat</span></label>
-                </div>
             </div>
-
             <button class="action-submit-btn" onclick="sendLicenseApplication()">Отправить Анкету</button>
         </div>
     </div>
@@ -589,59 +444,86 @@
     <div id="screen-factions" class="screen">
         <div class="page-header">
             <div class="back-circle-btn" onclick="switchScreen('main')">←</div>
-            <div class="page-header-info">
-                <h1>Фракции</h1>
-                <p>Выберите ведомство для подачи анкеты</p>
-            </div>
+            <div class="page-header-info"><h1>Фракции</h1><p>Государственные структуры</p></div>
         </div>
-        <div class="category-divider other">Государственные структуры</div>
         <div id="factions-list-container"></div>
     </div>
 
     <div id="screen-faction-apply" class="screen">
         <div class="page-header">
             <div class="back-circle-btn" onclick="switchScreen('factions')">←</div>
-            <div class="page-header-info">
-                <h1 id="apply-faction-title">Заявление</h1>
-                <p>Вступление в организацию</p>
-            </div>
+            <div class="page-header-info"><h1 id="apply-faction-title">Заявление</h1><p>Контрактная служба</p></div>
         </div>
         <div class="glass-card">
-            <div class="input-wrapper">
-                <div class="input-label">Ваш игровой ник</div>
-                <input type="text" id="fa-input-roblox" class="styled-input" readonly>
-            </div>
-            <div class="input-wrapper">
-                <div class="input-label">Почему вы хотите занять эту должность?</div>
-                <textarea id="fa-input-reason" class="styled-input" rows="4" style="resize: none;" placeholder="Опишите ваши цели и навыки..."></textarea>
-            </div>
+            <div class="input-wrapper"><div class="input-label">Ник в игре</div><input type="text" id="fa-input-roblox" class="styled-input" readonly></div>
+            <div class="input-wrapper"><div class="input-label">Почему вы хотите вступить?</div><textarea id="fa-input-reason" class="styled-input" rows="4" style="resize:none;"></textarea></div>
         </div>
         <button class="action-submit-btn" onclick="submitFactionApply()">Отправить Анкету</button>
     </div>
 
+    <div id="screen-profile" class="screen">
+        <div style="margin-bottom: 20px;">
+            <h1 style="font-size: 22px; font-weight: 900; color: var(--bright-green);">ПРОФИЛЬ</h1>
+            <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">ЛИЧНЫЕ ДАННЫЕ И ДОКУМЕНТЫ</p>
+        </div>
+
+        <div class="profile-main-card">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="profile-avatar" id="prof-avatar-letter">R</div>
+                <div>
+                    <div id="prof-roblox-name" style="font-size: 18px; font-weight: 800; color: #fff;">RobloxNick</div>
+                    <div id="prof-tg-name" style="font-size: 12px; color: var(--bright-green); margin-top: 2px;">@telegram</div>
+                    <div><span class="profile-status-badge">✓ Верифицирован</span></div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 14px; display: flex; justify-content: space-between;">
+                <div><span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Баланс валюты</span></div>
+                <div><span style="font-size: 14px; font-weight: 800; color: #f1c40f;">200 CR</span></div>
+            </div>
+        </div>
+
+        <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;" onclick="showSystemToast('Вы не состоите в организациях')">
+            <div>
+                <div style="font-size:14px; font-weight:800;">Моя деятельность</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Фракция: Отсутствует</div>
+            </div>
+            <span style="color:var(--text-muted);">❯</span>
+        </div>
+
+        <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;" onclick="showSystemToast('У вас нет активной недвижимости')">
+            <div>
+                <div style="font-size:14px; font-weight:800;">Мои дома</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Недвижмость отсутствует</div>
+            </div>
+            <span style="color:var(--text-muted);">❯</span>
+        </div>
+
+        <button class="action-submit-btn" style="background:var(--danger-red); margin-top: 20px;" onclick="logOut()">Выйти из аккаунта</button>
+    </div>
+
     <div id="screen-news" class="screen">
-        <div class="page-header"><div class="back-circle-btn" onclick="switchScreen('main')">←</div><div class="page-header-info"><h1>Новости</h1><p>События штата</p></div></div>
-        <div id="news-container-list"></div>
+        <div class="page-header"><div class="back-circle-btn" onclick="switchScreen('main')">←</div><div class="page-header-info"><h1>Новости</h1><p>Важные события</p></div></div>
+        <div class="glass-card"><h4 style="color:var(--bright-green);">Открытие портала Redwood!</h4><p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Весь функционал полностью запущен и оптимизирован.</p></div>
     </div>
 
     <div id="screen-ideas" class="screen">
-        <div class="page-header"><div class="back-circle-btn" onclick="switchScreen('main')">←</div><div class="page-header-info"><h1>Голос места</h1><p>Идеи игроков</p></div></div>
+        <div class="page-header"><div class="back-circle-btn" onclick="switchScreen('main')">←</div><div class="page-header-info"><h1>Голос места</h1><p>Идеи</p></div></div>
         <div class="glass-card">
-            <div class="input-wrapper"><input type="text" id="idea-text-input" class="styled-input" placeholder="Опишите вашу идею..."></div>
-            <button class="action-submit-btn" style="margin-top:0;" onclick="submitIdea()">Отправить Анкету</button>
+            <input type="text" id="idea-input" class="styled-input" placeholder="Опишите предложение...">
+            <button class="action-submit-btn" style="margin-top:10px;" onclick="submitIdea()">Отправить Анкету</button>
         </div>
-        <div id="ideas-list-box"></div>
+        <div id="ideas-list"></div>
     </div>
 
     <div id="screen-rules" class="screen">
-        <div class="page-header"><div class="back-circle-btn" onclick="switchScreen('main')">←</div><div class="page-header-info"><h1>Кодекс правил</h1><p>Законы проекта</p></div></div>
-        <div class="glass-card" style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">Свод законов и правил находится на стадии планового обновления следящей администрацией.</div>
+        <div class="page-header"><div class="back-circle-btn" onclick="switchScreen('main')">←</div><div class="page-header-info"><h1>Правила</h1><p>Законы</p></div></div>
+        <div class="glass-card" style="color:var(--text-muted); font-size:13px;">Свод правил обновляется. Соблюдайте базовые принципы RolePlay процесса!</div>
     </div>
 
     <nav class="bottom-navigation-bar" id="main-nav-bar" style="display: none;">
         <button class="nav-tab-item active" onclick="handleNavClick(this, 'main')"><span class="nav-tab-icon">🏠</span><span>Главная</span></button>
         <button class="nav-tab-item" onclick="handleNavClick(this, 'factions')"><span class="nav-tab-icon">🛡️</span><span>Фракции</span></button>
-        <button class="nav-tab-item" onclick="handleNavClick(this, 'licenses')"><span class="nav-tab-icon">💳</span><span>Лицензии</span></button>
+        <button class="nav-tab-item" onclick="handleNavClick(this, 'profile')"><span class="nav-tab-icon">👤</span><span>Профиль</span></button>
     </nav>
 
     <div id="system-toast" class="toast-error-popup">
@@ -654,28 +536,31 @@
         tg.expand();
 
         let myRobloxNick = "";
-        let targetFaction = "";
+        let currentFaction = "";
+        const FACTIONS = ["СБУ", "ДБР", "НПУ", "ЗСУ", "Прокуратура", "ДСНС", "Суд", "Адвокатура", "Кухар"];
 
-        const FACTION_NAMES = ["СБУ", "ДБР", "НПУ", "ЗСУ", "Прокуратура", "ДСНС", "Суд", "Адвокатура", "Кухар"];
-
-        // Инициализация локальных хранилищ
+        if(!localStorage.getItem('db_lics')) localStorage.setItem('db_lics', JSON.stringify([]));
+        if(!localStorage.getItem('db_mayors')) localStorage.setItem('db_mayors', JSON.stringify([]));
         if(!localStorage.getItem('db_ideas')) localStorage.setItem('db_ideas', JSON.stringify([]));
-        if(!localStorage.getItem('db_lic_registry')) localStorage.setItem('db_lic_registry', JSON.stringify([]));
-        if(!localStorage.getItem('db_mayor_applicants')) localStorage.setItem('db_mayor_applicants', JSON.stringify([]));
 
-        // Показ универсального системного уведомления снизу
+        // Автоматический вход при загрузке страницы
+        window.addEventListener('DOMContentLoaded', () => {
+            let savedNick = localStorage.getItem('session_roblox_nick');
+            if(savedNick) {
+                initUserSession(savedNick);
+            }
+        });
+
         function showSystemToast(text) {
             let toast = document.getElementById('system-toast');
             document.getElementById('system-toast-text').innerText = text;
             toast.classList.add('visible');
-            setTimeout(() => { toast.classList.remove('visible'); }, 3200);
+            setTimeout(() => { toast.classList.remove('visible'); }, 3000);
         }
 
-        // Валидация чекбоксов (Максимум 5)
-        function validateMaxWeapons(checkbox) {
-            let checkedBoxes = document.querySelectorAll('.lic-weapon-cb:checked');
-            if (checkedBoxes.length > 5) {
-                checkbox.checked = false; 
+        function validateMaxWeapons(cb) {
+            if(document.querySelectorAll('.lic-weapon-cb:checked').length > 5) {
+                cb.checked = false;
                 showSystemToast("⚠️ Максимум 5 предметов!");
             }
         }
@@ -686,16 +571,35 @@
                 showSystemToast("❌ Укажите ваш игровой ник!");
                 return;
             }
-            myRobloxNick = nick;
+            localStorage.setItem('session_roblox_nick', nick);
+            initUserSession(nick);
+            showSystemToast("✅ Успешный вход!");
+        }
 
-            document.getElementById('fa-input-roblox').value = nick;
+        function initUserSession(nick) {
+            myRobloxNick = nick;
+            
+            // Заполнение полей во всех анкетах
+            document.getElementById('mayor-nick').value = nick;
             document.getElementById('form-lic-roblox').value = nick;
-            document.getElementById('mayor-input-roblox').value = nick;
-            document.getElementById('form-lic-tg').value = tg.initDataUnsafe?.user?.username ? `@${tg.initDataUnsafe.user.username}` : "";
+            document.getElementById('fa-input-roblox').value = nick;
+
+            // Заполнение вкладки профиля
+            document.getElementById('prof-roblox-name').innerText = nick;
+            document.getElementById('prof-avatar-letter').innerText = nick.charAt(0).toUpperCase();
+            
+            let tgUser = tg.initDataUnsafe?.user?.username ? `@${tg.initDataUnsafe.user.username}` : "@не определен";
+            document.getElementById('prof-tg-name').innerText = tgUser;
 
             document.getElementById('main-nav-bar').style.display = 'flex';
             switchScreen('main');
-            showSystemToast("✅ Авторизация успешна!");
+        }
+
+        function logOut() {
+            localStorage.removeItem('session_roblox_nick');
+            document.getElementById('main-nav-bar').style.display = 'none';
+            document.getElementById('reg-roblox').value = "";
+            switchScreen('reg');
         }
 
         function switchScreen(id) {
@@ -707,53 +611,50 @@
         function handleNavClick(el, id) {
             document.querySelectorAll('.nav-tab-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
-            if(id === 'factions') renderFactionsList();
-            if(id === 'licenses') { switchLicTab('registry'); renderLicenseRegistry(); }
             switchScreen(id);
         }
 
+        // Логика Лицензий
+        function openLicenses() {
+            switchLicTab('registry');
+            renderLicenseRegistry();
+            switchScreen('licenses');
+        }
         function switchLicTab(tab) {
             document.getElementById('lic-page-registry').style.display = (tab === 'registry') ? 'block' : 'none';
             document.getElementById('lic-page-buy').style.display = (tab === 'buy') ? 'block' : 'none';
             document.getElementById('tab-lic-reg').className = 'unified-tab-btn' + (tab === 'registry' ? ' active' : '');
             document.getElementById('tab-lic-buy').className = 'unified-tab-btn' + (tab === 'buy' ? ' active' : '');
         }
-
-        // Лицензии
         function sendLicenseApplication() {
-            let tgUser = document.getElementById('form-lic-tg').value.trim();
             let weapons = [];
             document.querySelectorAll('.lic-weapon-cb:checked').forEach(cb => weapons.push(cb.value));
-
-            if(!tgUser || weapons.length === 0) {
-                showSystemToast("❌ Заполните ТГ и выберите оружие!");
+            if(weapons.length === 0) {
+                showSystemToast("❌ Выберите хотя бы 1 оружие!");
                 return;
             }
+            let list = JSON.parse(localStorage.getItem('db_lics'));
+            list.push({ roblox: myRobloxNick, items: weapons.join(', ') });
+            localStorage.setItem('db_lics', JSON.stringify(list));
 
-            let reg = JSON.parse(localStorage.getItem('db_lic_registry'));
-            reg.push({ roblox: myRobloxNick, tg: tgUser, list: weapons });
-            localStorage.setItem('db_lic_registry', JSON.stringify(reg));
-
-            showSystemToast("✅ Анкета отправлена на модерацию!");
+            showSystemToast("✅ Отправить Анкету");
             document.querySelectorAll('.lic-weapon-cb').forEach(cb => cb.checked = false);
-            switchLicTab('registry');
-            renderLicenseRegistry();
+            openLicenses();
         }
-
         function renderLicenseRegistry() {
-            let list = JSON.parse(localStorage.getItem('db_lic_registry'));
+            let list = JSON.parse(localStorage.getItem('db_lics'));
             let q = document.getElementById('lic-search-input').value.toLowerCase();
             let box = document.getElementById('lic-registry-container');
-
             let filtered = list.filter(i => i.roblox.toLowerCase().includes(q));
+
             if(filtered.length === 0) {
-                box.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:12px; padding:20px;">Активных лицензий не обнаружено</div>';
+                box.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:12px; padding:20px;">Реестр пуст</div>';
             } else {
                 box.innerHTML = filtered.map(i => `
-                    <div class="registry-item-row">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:14px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04); border-radius:12px; margin-bottom:8px;">
                         <div>
-                            <div style="font-weight:800; font-size:13px;">${i.roblox} <span style="font-size:11px; color:var(--text-muted); font-weight:400;">(${i.tg})</span></div>
-                            <div style="font-size:11px; color:var(--bright-green); margin-top:3px; font-weight:600;">${i.list.join(', ')}</div>
+                            <div style="font-weight:800; font-size:13px;">${i.roblox}</div>
+                            <div style="font-size:11px; color:var(--bright-green); margin-top:2px;">${i.items}</div>
                         </div>
                         <div style="width:6px; height:6px; background:var(--bright-green); border-radius:50%;"></div>
                     </div>
@@ -761,115 +662,87 @@
             }
         }
 
-        // Фракции
-        function renderFactionsList() {
+        // Логика Фракций
+        function openFactions() {
             let box = document.getElementById('factions-list-container');
-            box.innerHTML = FACTION_NAMES.map(f => `
-                <div class="glass-card" style="display:flex; justify-content:space-between; align-items:center;" onclick="openFactionApply('${f}')">
-                    <div>
-                        <div style="font-weight:800; font-size:14px;">${f}</div>
-                        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Подать заявку на контрактную службу</div>
-                    </div>
+            box.innerHTML = FACTIONS.map(f => `
+                <div class="glass-card" style="display:flex; justify-content:space-between; align-items:center;" onclick="startFactionApply('${f}')">
+                    <div><div style="font-weight:800; font-size:14px;">${f}</div><div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Подать заявку в академию</div></div>
                     <span style="color:var(--text-muted);">❯</span>
                 </div>
             `).join('');
+            switchScreen('factions');
         }
-
-        function openFactionApply(name) {
-            targetFaction = name;
+        function startFactionApply(name) {
+            currentFaction = name;
             document.getElementById('apply-faction-title').innerText = name;
             switchScreen('faction-apply');
         }
-
         function submitFactionApply() {
-            let reason = document.getElementById('fa-input-reason').value.trim();
-            if(!reason) {
-                showSystemToast("❌ Напишите причину вступления!");
+            if(!document.getElementById('fa-input-reason').value.trim()) {
+                showSystemToast("❌ Укажите причину подачи!");
                 return;
             }
-            showSystemToast(`✅ Анкета в ${targetFaction} успешно передана!`);
+            showSystemToast("✅ Отправить Анкету");
             document.getElementById('fa-input-reason').value = "";
-            switchScreen('factions');
+            openFactions();
         }
 
-        // Выборы
+        // Логика Выборов Мэра
         function openMayor() {
+            renderMayorCandidates();
             switchScreen('mayor');
-            renderMayorCandidates();
         }
-
         function submitMayorApply() {
-            let reason = document.getElementById('mayor-input-reason').value.trim();
+            let reason = document.getElementById('mayor-reason').value.trim();
             if(!reason) {
-                showSystemToast("❌ Заполните вашу программу!");
+                showSystemToast("❌ Заполните анкету полностью!");
                 return;
             }
+            let list = JSON.parse(localStorage.getItem('db_mayors'));
+            list.push({ roblox: myRobloxNick, reason: reason });
+            localStorage.setItem('db_mayors', JSON.stringify(list));
 
-            let applicants = JSON.parse(localStorage.getItem('db_mayor_applicants'));
-            if(applicants.some(a => a.roblox.toLowerCase() === myRobloxNick.toLowerCase())) {
-                showSystemToast("❌ Вы уже подали анкету!");
-                return;
-            }
-
-            applicants.push({ roblox: myRobloxNick, reason: reason });
-            localStorage.setItem('db_mayor_applicants', JSON.stringify(applicants));
-            
-            showSystemToast("✅ Анкета кандидата успешно подана!");
-            document.getElementById('mayor-input-reason').value = "";
+            showSystemToast("✅ Отправить Анкету");
+            document.getElementById('mayor-reason').value = "";
             renderMayorCandidates();
         }
-
         function renderMayorCandidates() {
-            let list = JSON.parse(localStorage.getItem('db_mayor_applicants'));
+            let list = JSON.parse(localStorage.getItem('db_mayors'));
             let box = document.getElementById('mayor-candidates-list');
             if(list.length === 0) {
-                box.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:12px; padding:20px;">Кандидатов пока нет. Станьте первым!</div>';
+                box.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:12px; padding:15px;">Нет кандидатов</div>';
             } else {
                 box.innerHTML = list.map(c => `
                     <div class="glass-card">
-                        <div style="font-weight:800; color:var(--bright-green); font-size:14px;">${c.roblox}</div>
+                        <div style="font-weight:800; color:var(--bright-green); font-size:13px;">${c.roblox}</div>
                         <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${c.reason}</div>
                     </div>
                 `).join('');
             }
         }
 
-        // Идеи и новости
+        // Новости и предложения
+        function openNews() { switchScreen('news'); }
         function submitIdea() {
-            let text = document.getElementById('idea-text-input').value.trim();
-            if(!text) return;
+            let t = document.getElementById('idea-input').value.trim();
+            if(!t) return;
             let list = JSON.parse(localStorage.getItem('db_ideas'));
-            list.unshift({ user: myRobloxNick, text: text });
+            list.unshift({ nick: myRobloxNick, text: t });
             localStorage.setItem('db_ideas', JSON.stringify(list));
-            document.getElementById('idea-text-input').value = "";
-            showSystemToast("✅ Предложение опубликовано!");
+            document.getElementById('idea-input').value = "";
+            showSystemToast("✅ Отправить Анкету");
             renderIdeas();
         }
-
         function renderIdeas() {
             let list = JSON.parse(localStorage.getItem('db_ideas'));
-            document.getElementById('ideas-list-box').innerHTML = list.map(i => `
+            document.getElementById('ideas-list').innerHTML = list.map(i => `
                 <div class="glass-card">
-                    <div style="font-size:11px; color:var(--bright-green); font-weight:700;">${i.user}</div>
+                    <div style="font-size:11px; color:var(--bright-green); font-weight:700;">${i.nick}</div>
                     <div style="margin-top:4px; font-size:13px;">${i.text}</div>
                 </div>
             `).join('');
         }
-
-        function openNews() {
-            switchScreen('news');
-            document.getElementById('news-container-list').innerHTML = `
-                <div class="glass-card">
-                    <h4 style="color:var(--bright-green);">Открытие РП портала Redwood!</h4>
-                    <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Добро пожаловать в единую систему управления штатом.</p>
-                </div>
-            `;
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderIdeas();
-            document.getElementById('main-stat-fac').innerText = FACTION_NAMES.length * 2;
-        });
     </script>
 </body>
 </html>
